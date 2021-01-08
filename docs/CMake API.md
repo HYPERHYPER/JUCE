@@ -480,6 +480,13 @@ attributes directly to these creation functions, rather than adding them later.
 - `AU_SANDBOX_SAFE`
   - May be either TRUE or FALSE. Adds the appropriate entries to an AU plugin's Info.plist.
 
+- `SUPPRESS_AU_PLIST_RESOURCE_USAGE`
+  - May be either TRUE or FALSE. Defaults to FALSE. Set this to TRUE to disable the `resourceUsage`
+    key in the target's plist. This is useful for AU plugins that must access resources which cannot
+    be declared in the resourceUsage block, such as UNIX domain sockets. In particular,
+    PACE-protected AU plugins may require this option to be enabled in order for the plugin to load
+    in GarageBand.
+
 - `AAX_CATEGORY`
   - Should be one of: `AAX_ePlugInCategory_None`, `AAX_ePlugInCategory_EQ`,
     `AAX_ePlugInCategory_Dynamics`, `AAX_ePlugInCategory_PitchShift`, `AAX_ePlugInCategory_Reverb`,
@@ -646,21 +653,37 @@ CMake-supplied defaults.
 
 #### `juce::juce_recommended_warning_flags`
 
-    target_link_libraries(myTarget PRIVATE juce::juce_recommended_warning_flags)
+    target_link_libraries(myTarget PUBLIC juce::juce_recommended_warning_flags)
 
 This is a target which can be linked to other targets using `target_link_libraries`, in order to
 enable the recommended JUCE warnings when building them.
 
+This target just sets compiler and linker flags, and doesn't have any associated libraries or
+include directories. When building plugins, it's probably desirable to link this to the shared code
+target with `PUBLIC` visibility, so that all the plugin wrappers inherit the same compile/link
+flags.
+
 #### `juce::juce_recommended_config_flags`
 
-    target_link_libraries(myTarget PRIVATE juce::juce_recommended_config_flags)
+    target_link_libraries(myTarget PUBLIC juce::juce_recommended_config_flags)
 
 This is a target which can be linked to other targets using `target_link_libraries`, in order to
 enable the recommended JUCE optimisation and debug flags.
 
+This target just sets compiler and linker flags, and doesn't have any associated libraries or
+include directories. When building plugins, it's probably desirable to link this to the shared code
+target with `PUBLIC` visibility, so that all the plugin wrappers inherit the same compile/link
+flags.
+
 #### `juce::juce_recommended_lto_flags`
 
-    target_link_libraries(myTarget PRIVATE juce::juce_recommended_lto_flags)
+    target_link_libraries(myTarget PUBLIC juce::juce_recommended_lto_flags)
 
 This is a target which can be linked to other targets using `target_link_libraries`, in order to
 enable the recommended JUCE link time optimisation settings.
+
+This target just sets compiler and linker flags, and doesn't have any associated libraries or
+include directories. When building plugins, it's probably desirable to link this to the shared code
+target with `PUBLIC` visibility, so that all the plugin wrappers inherit the same compile/link
+flags.
+
