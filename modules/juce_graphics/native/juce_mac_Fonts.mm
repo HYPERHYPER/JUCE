@@ -207,7 +207,7 @@ namespace CoreTextTypeLayout
     //==============================================================================
     static CFAttributedStringRef createCFAttributedString (const AttributedString& text)
     {
-        auto rgbColourSpace = CGColorSpaceCreateWithName (kCGColorSpaceSRGB);
+        const detail::ColorSpacePtr rgbColourSpace { CGColorSpaceCreateWithName (kCGColorSpaceSRGB) };
 
         auto attribString = CFAttributedStringCreateMutable (kCFAllocatorDefault, 0);
         auto cfText = text.getText().toCFString();
@@ -257,11 +257,12 @@ namespace CoreTextTypeLayout
 
             {
                 auto col = attr.colour;
+
                 const CGFloat components[] = { col.getFloatRed(),
                                                col.getFloatGreen(),
                                                col.getFloatBlue(),
                                                col.getFloatAlpha() };
-                auto colour = CGColorCreate (rgbColourSpace, components);
+                auto colour = CGColorCreate (rgbColourSpace.get(), components);
 
                 CFAttributedStringSetAttribute (attribString, range, kCTForegroundColorAttributeName, colour);
                 CGColorRelease (colour);
@@ -286,7 +287,6 @@ namespace CoreTextTypeLayout
         CFAttributedStringSetAttribute (attribString, CFRangeMake (0, CFAttributedStringGetLength (attribString)),
                                         kCTParagraphStyleAttributeName, ctParagraphStyleRef);
         CFRelease (ctParagraphStyleRef);
-        CGColorSpaceRelease (rgbColourSpace);
         return attribString;
     }
 
