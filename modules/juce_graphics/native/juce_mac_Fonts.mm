@@ -267,6 +267,28 @@ namespace CoreTextTypeLayout
                 CFAttributedStringSetAttribute (attribString, range, kCTForegroundColorAttributeName, colour);
                 CGColorRelease (colour);
             }
+            
+            {
+                auto col = attr.outlineColour;
+
+                const CGFloat components[] = { col.getFloatRed(),
+                                               col.getFloatGreen(),
+                                               col.getFloatBlue(),
+                                               col.getFloatAlpha() };
+                auto colour = CGColorCreate (rgbColourSpace.get(), components);
+
+                CFAttributedStringSetAttribute (attribString, range, kCTStrokeColorAttributeName, colour);
+                CGColorRelease (colour);
+            }
+            
+            {
+                auto outlineWidth = -attr.outlineWidth;
+                
+                auto width = CFNumberCreate (nullptr, kCFNumberFloatType, &outlineWidth);
+
+                CFAttributedStringSetAttribute (attribString, range, kCTStrokeWidthAttributeName, width);
+                CFRelease (width);
+            }
         }
 
         // Paragraph Attributes

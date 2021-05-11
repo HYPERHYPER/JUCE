@@ -165,6 +165,12 @@ public:
 
         /** The colour for this range of characters. */
         Colour colour { 0xff000000 };
+        
+        /** The outline colour for this range of characters. */
+        Colour outlineColour { 0xff000000 };
+        
+        /** The outline width for this range of characters. */
+        float outlineWidth = 0.0;
 
     private:
         JUCE_LEAK_DETECTOR (Attribute)
@@ -181,9 +187,21 @@ public:
     //==============================================================================
     /** Adds a colour attribute for the specified range. */
     void setColour (Range<int> range, Colour colour);
+    
+    /** Adds an outline colour attribute for the specified range. */
+    void setOutlineColour (Range<int> range, Colour colour);
+    
+    /** Adds an outline width attribute for the specified range. */
+    void setOutlineWidth (Range<int> range, float outlineWidth);
 
     /** Removes all existing colour attributes, and applies this colour to the whole string. */
     void setColour (Colour colour);
+    
+    /** Removes all existing outline colour attributes, and applies this outline colour to the whole string. */
+    void setOutlineColour (Colour colour);
+    
+    /** Removes all existing outline width attributes, and applies this outline width to the whole string. */
+    void setOutlineWidth (float outlineWidth);
 
     /** Adds a font attribute for the specified range. */
     void setFont (Range<int> range, const Font& font);
