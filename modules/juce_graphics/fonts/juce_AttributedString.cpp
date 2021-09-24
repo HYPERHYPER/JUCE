@@ -104,7 +104,7 @@ namespace
     }
 
     void applyFontAndColour (Array<AttributedString::Attribute>& atts,
-                             Range<int> range, const Font* f, const Colour* c, const Colour* oc, const float* ow)
+                             Range<int> range, const Font* f, const Colour* c, const Colour* oc, const float* ow, const bool* ul)
     {
         range = splitAttributeRanges (atts, range);
 
@@ -119,6 +119,7 @@ namespace
                 if (oc != nullptr) att.outlineColour = *oc;
                 if (ow != nullptr) att.outlineWidth = *ow;
                 if (f != nullptr) att.font = *f;
+                if (ul != nullptr) att.underlined = *ul;
             }
         }
 
@@ -220,22 +221,26 @@ void AttributedString::setLineSpacing (const float newLineSpacing) noexcept
 
 void AttributedString::setColour (Range<int> range, Colour colour)
 {
-    applyFontAndColour (attributes, range, nullptr, &colour, nullptr, nullptr);
+    applyFontAndColour (attributes, range, nullptr, &colour, nullptr, nullptr, nullptr);
 }
 
 void AttributedString::setOutlineColour (Range<int> range, Colour colour)
 {
-    applyFontAndColour (attributes, range, nullptr, nullptr, &colour, nullptr);
+    applyFontAndColour (attributes, range, nullptr, nullptr, &colour, nullptr, nullptr);
 }
 
 void AttributedString::setOutlineWidth (Range<int> range, float outlineWidth)
 {
-    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, &outlineWidth);
+    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, &outlineWidth, nullptr);
 }
 
 void AttributedString::setFont (Range<int> range, const Font& font)
 {
-    applyFontAndColour (attributes, range, &font, nullptr, nullptr, nullptr);
+    applyFontAndColour (attributes, range, &font, nullptr, nullptr, nullptr, nullptr);
+}
+
+void AttributedString::setUnderlined (Range<int> range, bool underlined) {
+    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, nullptr, &underlined);
 }
 
 void AttributedString::setColour (Colour colour)

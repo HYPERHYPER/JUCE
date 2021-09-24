@@ -171,6 +171,9 @@ public:
         
         /** The outline width for this range of characters. */
         float outlineWidth = 0.0;
+        
+        /** The outline colour for this range of characters. */
+        bool underlined = false;
 
     private:
         JUCE_LEAK_DETECTOR (Attribute)
@@ -205,6 +208,9 @@ public:
 
     /** Adds a font attribute for the specified range. */
     void setFont (Range<int> range, const Font& font);
+    
+    /** Adds an underlined attribute for the specified range. */
+    void setUnderlined (Range<int> range, bool underlined);
 
     /** Removes all existing font attributes, and applies this font to the whole string. */
     void setFont (const Font& font);

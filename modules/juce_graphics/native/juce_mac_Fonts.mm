@@ -289,6 +289,16 @@ namespace CoreTextTypeLayout
                 CFAttributedStringSetAttribute (attribString, range, kCTStrokeWidthAttributeName, width);
                 CFRelease (width);
             }
+            
+            if (attr.underlined)
+            {
+                auto underline = kCTUnderlineStyleSingle;
+
+                auto numberRef = CFNumberCreate (nullptr, kCFNumberIntType, &underline);
+                
+                CFAttributedStringSetAttribute (attribString, range, kCTUnderlineStyleAttributeName, numberRef);
+                CFRelease (numberRef);
+            }
         }
 
         // Paragraph Attributes
