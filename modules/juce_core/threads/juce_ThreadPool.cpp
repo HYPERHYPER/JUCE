@@ -26,7 +26,7 @@ namespace juce
 struct ThreadPool::ThreadPoolThread  : public Thread
 {
     ThreadPoolThread (ThreadPool& p, size_t stackSize)
-       : Thread ("Pool", stackSize), pool (p)
+       : Thread (p.threadName, stackSize), pool (p)
     {
     }
 
@@ -91,6 +91,12 @@ ThreadPoolJob* ThreadPoolJob::getCurrentThreadPoolJob()
 
 //==============================================================================
 ThreadPool::ThreadPool (int numThreads, size_t threadStackSize)
+  : ThreadPool ("Pool", numThreads, threadStackSize)
+{
+}
+
+ThreadPool::ThreadPool (const String& name, int numThreads, size_t threadStackSize)
+  : threadName (name)
 {
     jassert (numThreads > 0); // not much point having a pool without any threads!
 
@@ -98,6 +104,7 @@ ThreadPool::ThreadPool (int numThreads, size_t threadStackSize)
 }
 
 ThreadPool::ThreadPool()
+  : threadName ("Pool")
 {
     createThreads (SystemStats::getNumCpus());
 }

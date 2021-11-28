@@ -166,6 +166,19 @@ public:
                                 be used.
     */
     ThreadPool (int numberOfThreads, size_t threadStackSize = 0);
+    
+    /** Creates a thread pool.
+        Once you've created a pool, you can give it some jobs by calling addJob().
+        
+        @param threadName       The name of the thread which typically appears in
+                                debug logs and profiles.
+        @param numberOfThreads  the number of threads to run. These will be started
+                                immediately, and will run until the pool is deleted.
+        @param threadStackSize  the size of the stack of each thread. If this value
+                                is zero then the default stack size of the OS will
+                                be used.
+    */
+    ThreadPool (const String& threadName, int numberOfThreads, size_t threadStackSize = 0);
 
     /** Creates a thread pool with one thread per CPU core.
         Once you've created a pool, you can give it some jobs by calling addJob().
@@ -318,6 +331,7 @@ public:
 
 private:
     //==============================================================================
+    const String threadName;
     Array<ThreadPoolJob*> jobs;
 
     struct ThreadPoolThread;
