@@ -87,6 +87,11 @@ public:
         by the child components.
     */
     void resetContentAreaAndBoundingBoxToFitChildren();
+    
+    /** Adjusts the bounds of this Drawable so that it can fit all of its child
+        components.
+    */
+    virtual void updateBoundsToFitChildren();
 
     //==============================================================================
     /** @internal */
@@ -107,8 +112,6 @@ private:
     Parallelogram<float> bounds;
     Rectangle<float> contentArea;
     bool updateBoundsReentrant = false;
-
-    void updateBoundsToFitChildren();
 
     DrawableComposite& operator= (const DrawableComposite&);
     JUCE_LEAK_DETECTOR (DrawableComposite)
