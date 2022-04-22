@@ -107,6 +107,12 @@ public:
     const Font& getFont() override;
     void drawGlyph (int glyphNumber, const AffineTransform&) override;
     bool drawTextLayout (const AttributedString&, const Rectangle<float>&) override;
+    
+    //==============================================================================
+    CGContextRef getContext() const { return context.get(); }
+    CGColorSpaceRef getRGBColorSpace() const { return rgbColourSpace.get(); }
+    CGColorSpaceRef getGreyColorSpace() const { return greyColourSpace.get(); }
+    CGFloat getFlipHeight() const { return flipHeight; }
 
 private:
     //==============================================================================
