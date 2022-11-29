@@ -347,6 +347,14 @@ namespace CoreTextTypeLayout
                 CFAttributedStringSetAttribute (attribString, range, kCTUnderlineStyleAttributeName, numberRef);
                 CFRelease (numberRef);
             }
+            
+            {
+                auto ligature = attr.ligature;
+                auto numberRef = CFNumberCreate (nullptr, kCFNumberIntType, &ligature);
+                
+                CFAttributedStringSetAttribute (attribString, range, kCTLigatureAttributeName, numberRef);
+                CFRelease (numberRef);
+            }
         }
 
         // Paragraph Attributes

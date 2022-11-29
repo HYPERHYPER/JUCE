@@ -179,6 +179,9 @@ public:
         
         /** The outline colour for this range of characters. */
         bool underlined = false;
+        
+        /** The type of ligatures to use.. */
+        int ligature = 1;
 
     private:
         JUCE_LEAK_DETECTOR (Attribute)
@@ -216,6 +219,9 @@ public:
     
     /** Adds an underlined attribute for the specified range. */
     void setUnderlined (Range<int> range, bool underlined);
+    
+    /** Adds a ligature attribute for the specified range. */
+    void setLigature (Range<int> range, int ligature);
 
     /** Removes all existing font attributes, and applies this font to the whole string. */
     void setFont (const Font& font);

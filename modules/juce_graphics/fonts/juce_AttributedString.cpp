@@ -122,7 +122,7 @@ namespace
     }
 
     void applyFontAndColour (Array<AttributedString::Attribute>& atts,
-                             Range<int> range, const Font* f, const Colour* c, const Colour* oc, const float* ow, const bool* ul)
+                             Range<int> range, const Font* f, const Colour* c, const Colour* oc, const float* ow, const bool* ul, const int* li)
     {
         range = splitAttributeRanges (atts, range);
 
@@ -138,6 +138,7 @@ namespace
                 if (ow != nullptr) att.outlineWidth = *ow;
                 if (f != nullptr) att.font = *f;
                 if (ul != nullptr) att.underlined = *ul;
+                if (li != nullptr) att.ligature = *li;
             }
         }
 
@@ -245,30 +246,35 @@ void AttributedString::setLineSpacing (const float newLineSpacing) noexcept
 
 void AttributedString::setColour (Range<int> range, Colour colour)
 {
-    applyFontAndColour (attributes, range, nullptr, &colour, nullptr, nullptr, nullptr);
+    applyFontAndColour (attributes, range, nullptr, &colour, nullptr, nullptr, nullptr, nullptr);
     jassert (areInvariantsMaintained (text, attributes));
 }
 
 void AttributedString::setOutlineColour (Range<int> range, Colour colour)
 {
-    applyFontAndColour (attributes, range, nullptr, nullptr, &colour, nullptr, nullptr);
+    applyFontAndColour (attributes, range, nullptr, nullptr, &colour, nullptr, nullptr, nullptr);
     jassert (areInvariantsMaintained (text, attributes));
 }
 
 void AttributedString::setOutlineWidth (Range<int> range, float outlineWidth)
 {
-    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, &outlineWidth, nullptr);
+    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, &outlineWidth, nullptr, nullptr);
     jassert (areInvariantsMaintained (text, attributes));
 }
 
 void AttributedString::setFont (Range<int> range, const Font& font)
 {
-    applyFontAndColour (attributes, range, &font, nullptr, nullptr, nullptr, nullptr);
+    applyFontAndColour (attributes, range, &font, nullptr, nullptr, nullptr, nullptr, nullptr);
     jassert (areInvariantsMaintained (text, attributes));
 }
 
 void AttributedString::setUnderlined (Range<int> range, bool underlined) {
-    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, nullptr, &underlined);
+    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, nullptr, &underlined, nullptr);
+    jassert (areInvariantsMaintained (text, attributes));
+}
+
+void AttributedString::setLigature (Range<int> range, int ligature) {
+    applyFontAndColour (attributes, range, nullptr, nullptr, nullptr, nullptr, nullptr, &ligature);
     jassert (areInvariantsMaintained (text, attributes));
 }
 
