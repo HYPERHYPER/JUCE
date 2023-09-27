@@ -363,13 +363,19 @@ namespace CoreTextTypeLayout
         auto ctLineBreakMode = getLineBreakMode (text);
         auto ctWritingDirection = getWritingDirection (text);
         CGFloat ctLineSpacing = text.getLineSpacing();
+        CGFloat ctLineHeightMultiple = text.getLineHeightMultiple();
+        CGFloat ctParagraphSpacing = text.getParagraphSpacing();
+        CGFloat ctParagraphSpacingBefore = text.getParagraphSpacingBefore();
 
         CTParagraphStyleSetting settings[] =
         {
             { kCTParagraphStyleSpecifierAlignment,              sizeof (CTTextAlignment),    &ctTextAlignment },
             { kCTParagraphStyleSpecifierLineBreakMode,          sizeof (CTLineBreakMode),    &ctLineBreakMode },
             { kCTParagraphStyleSpecifierBaseWritingDirection,   sizeof (CTWritingDirection), &ctWritingDirection},
-            { kCTParagraphStyleSpecifierLineSpacingAdjustment,  sizeof (CGFloat),            &ctLineSpacing }
+            { kCTParagraphStyleSpecifierLineSpacingAdjustment,  sizeof (CGFloat),            &ctLineSpacing },
+            { kCTParagraphStyleSpecifierLineHeightMultiple,     sizeof (CGFloat),            &ctLineHeightMultiple },
+            { kCTParagraphStyleSpecifierParagraphSpacing,       sizeof (CGFloat),            &ctParagraphSpacing },
+            { kCTParagraphStyleSpecifierParagraphSpacingBefore, sizeof (CGFloat),            &ctParagraphSpacingBefore }
         };
 
         CFUniquePtr<CTParagraphStyleRef> ctParagraphStyleRef (CTParagraphStyleCreate (settings, (size_t) numElementsInArray (settings)));

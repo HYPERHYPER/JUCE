@@ -146,6 +146,24 @@ public:
 
     /** Sets an extra line-spacing distance. */
     void setLineSpacing (float newLineSpacing) noexcept;
+    
+    /** Returns the line height multiple. */
+    float getLineHeightMultiple() const noexcept            { return lineHeightMultiple; };
+    
+    /** Sets the line height multiple. */
+    void setLineHeightMultiple (float newLineHeightMultiple) noexcept;
+    
+    /** Returns the paragraph spacing. */
+    float getParagraphSpacing() const noexcept              { return paragraphSpacing; };
+    
+    /** Sets the the paragraph spacing. */
+    void setParagraphSpacing (float newParagraphSpacing) noexcept;
+    
+    /** Returns the paragraph spacing before. */
+    float getParagraphSpacingBefore() const noexcept        { return paragraphSpacingBefore; };
+    
+    /** Sets the paragraph spacing before. */
+    void setParagraphSpacingBefore (float newParagraphSpacingBefore) noexcept;
 
     //==============================================================================
     /** An attribute that has been applied to a range of characters in an AttributedString. */
@@ -229,6 +247,9 @@ public:
 private:
     String text;
     float lineSpacing = 0.0f;
+    float lineHeightMultiple = 0.0f;
+    float paragraphSpacing = 0.0f;
+    float paragraphSpacingBefore = 0.0f;
     Justification justification = Justification::left;
     WordWrap wordWrap = AttributedString::byWord;
     ReadingDirection readingDirection = AttributedString::natural;

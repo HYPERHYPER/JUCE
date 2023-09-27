@@ -244,6 +244,19 @@ void AttributedString::setLineSpacing (const float newLineSpacing) noexcept
     lineSpacing = newLineSpacing;
 }
 
+void AttributedString::setLineHeightMultiple (float newLineHeightMultiple) noexcept
+{
+    lineHeightMultiple = newLineHeightMultiple;
+}
+
+void AttributedString::setParagraphSpacing (float newParagraphSpacing) noexcept {
+    paragraphSpacing = newParagraphSpacing;
+}
+
+void AttributedString::setParagraphSpacingBefore (float newParagraphSpacingBefore) noexcept {
+    paragraphSpacingBefore = newParagraphSpacingBefore;
+}
+
 void AttributedString::setColour (Range<int> range, Colour colour)
 {
     applyFontAndColour (attributes, range, nullptr, &colour, nullptr, nullptr, nullptr, nullptr);
