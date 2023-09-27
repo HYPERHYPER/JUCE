@@ -926,6 +926,13 @@ URL URL::withFileToUpload (const String& parameterName, const File& fileToUpload
                                    mimeType, fileToUpload, nullptr));
 }
 
+URL URL::withFileToUpload (const String& parameterName, const File& fileToUpload,
+                           const String& filename, const String& mimeType) const
+{
+    return withUpload (new Upload (parameterName, filename,
+                                   mimeType, fileToUpload, nullptr));
+}
+
 URL URL::withDataToUpload (const String& parameterName, const String& filename,
                            const MemoryBlock& fileContentToUpload, const String& mimeType) const
 {
