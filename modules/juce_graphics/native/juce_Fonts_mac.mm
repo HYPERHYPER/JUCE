@@ -631,7 +631,7 @@ namespace CoreTextTypeLayout
 
 
 //==============================================================================
-class OSXTypeface  : public Typeface
+class OSXTypeface final : public Typeface
 {
 public:
     OSXTypeface (const Font& font)
