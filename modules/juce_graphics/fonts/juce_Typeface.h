@@ -71,6 +71,11 @@ public:
         this method has returned.
     */
     static Ptr createSystemTypefaceFor (const void* fontFileData, size_t fontFileDataSize);
+    
+    /** Creates a new system typeface with a variation map applied to it.
+        Currently this is only implemented on macOS.
+    */
+    static Ptr createSystemTypefaceFor (const Font& font, const std::map<String, double>& variations);
 
     //==============================================================================
     /** Destructor. */
@@ -141,6 +146,66 @@ public:
         (i.e. normalised to height of 1.0) path for a glyph.
     */
     void applyVerticalHintingTransform (float fontHeight, Path& path);
+    
+    //==============================================================================
+    /** A font variation axis. In variable fonts, “axis” usually refers to a single
+        aspect of a typeface’s design that can be altered by the user.
+     
+        Currently this is only implemented on macOS.
+    */
+    class VariationAxis
+    {
+    public:
+        /** Creates an VariationAxis. */
+        VariationAxis (int32 identifier,
+                       double minimumValue,
+                       double maximumValue,
+                       double defaultValue,
+                       String name,
+                       bool hidden)
+          : identifier (identifier),
+            minimumValue (minimumValue),
+            maximumValue (maximumValue),
+            defaultValue (defaultValue),
+            name (name),
+            hidden (hidden) {}
+        
+        /** Destructor. */
+        ~VariationAxis() = default;
+        
+        /** Returns the axis identifier. */
+        int32 getIdentifier()       const { return identifier; }
+        
+        /** Returns the minimum axis value, */
+        double getMinimumValue()    const { return minimumValue; }
+        
+        /** Returns the maximum axis value. */
+        double getMaximumValue()    const { return maximumValue; }
+        
+        /** Returns the default axis value. */
+        double getDefaultValue()    const { return defaultValue; }
+        
+        /** Returns the localized variation axis name. */
+        String getName()            const { return name; }
+        
+        /** Returns whether or not the font designer recommends the axis not be
+            exposed directly to end users.
+        */
+        bool isHidden()             const { return hidden; }
+        
+    private:
+        int32 identifier;
+        double minimumValue;
+        double maximumValue;
+        double defaultValue;
+        String name;
+        bool hidden;
+    };
+    
+    /** Returns a list of variation axis or an empty list if the font does not support variations.
+        Currently this is only implemented on macOS.
+    */
+    virtual std::vector<VariationAxis> getVariationAxes() const { return std::vector<VariationAxis>{}; }
 
 protected:
     //==============================================================================

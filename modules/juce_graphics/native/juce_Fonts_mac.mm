@@ -684,6 +684,42 @@ public:
             }
         }
     }
+    
+    OSXTypeface (const Font& font, const std::map<String, double>& variations)
+        : Typeface (font.getTypefaceName(), font.getTypefaceStyle()), canBeUsedForLayout (true)
+    {
+        
+        CFUniquePtr<CFMutableDictionaryRef> fontVariations (CFDictionaryCreateMutable (nullptr,
+                                                                                       variations.size(),
+                                                                                       &kCFTypeDictionaryKeyCallBacks,
+                                                                                       &kCFTypeDictionaryValueCallBacks));
+        
+        for (auto& v : variations) {
+            CFUniquePtr<CFNumberRef> numberRef (CFNumberCreate (nullptr, kCFNumberDoubleType, &v.second));            
+            CFDictionaryAddValue (fontVariations.get(), v.first.toCFString(), numberRef.get());
+        }
+        
+        if (auto* tf = dynamic_cast<OSXTypeface*> (font.getTypefacePtr().get()))
+        {
+            fontRef = CGFontCreateCopyWithVariations (tf->fontRef, fontVariations.get());
+            
+            if (fontRef != nullptr)
+            {
+                ctFontRef.reset (CTFontCreateWithGraphicsFont (fontRef, referenceFontSize, nullptr, nullptr));
+
+                if (ctFontRef != nullptr)
+                {
+                    if (auto fontName = CFUniquePtr<CFStringRef> (CTFontCopyName (ctFontRef.get(), kCTFontFamilyNameKey)))
+                        name = String::fromCFString (fontName.get());
+
+                    if (auto fontStyle = CFUniquePtr<CFStringRef> (CTFontCopyName (ctFontRef.get(), kCTFontStyleNameKey)))
+                        style = String::fromCFString (fontStyle.get());
+
+                    initialiseMetrics();
+                }
+            }
+        }
+    }
 
     void initialiseMetrics()
     {
@@ -800,6 +836,27 @@ public:
 
         return false;
     }
+    
+    std::vector<Typeface::VariationAxis> getVariationAxes() const override {
+        auto results = std::vector<Typeface::VariationAxis>{};
+        
+        if (auto variationAxes = CFUniquePtr<CFArrayRef> (CTFontCopyVariationAxes (ctFontRef.get())))
+        {
+            for (CFIndex i = 0; i < CFArrayGetCount (variationAxes.get()); ++i)
+            {
+                auto axisDictionary = (CFDictionaryRef) CFArrayGetValueAtIndex (variationAxes.get(), i);
+                
+                results.emplace_back (getVariationAxisValue<int32>  (axisDictionary, kCTFontVariationAxisIdentifierKey).value_or    (-1),
+                                      getVariationAxisValue<double> (axisDictionary, kCTFontVariationAxisMinimumValueKey).value_or  (-1),
+                                      getVariationAxisValue<double> (axisDictionary, kCTFontVariationAxisMaximumValueKey).value_or  (-1),
+                                      getVariationAxisValue<double> (axisDictionary, kCTFontVariationAxisDefaultValueKey).value_or  (-1),
+                                      getVariationAxisValue<String> (axisDictionary, kCTFontVariationAxisNameKey).value_or          (String{}),
+                                      getVariationAxisValue<bool>   (axisDictionary, kCTFontVariationAxisHiddenKey).value_or        (false));
+            }
+        }
+        
+        return results;
+    }
 
     //==============================================================================
     CGFontRef fontRef = {};
@@ -833,6 +890,56 @@ private:
             case kCGPathElementCloseSubpath:        path.closeSubPath(); break;
             default:                                jassertfalse; break;
         }
+    }
+    
+    template <typename Type>
+    std::optional<Type> getVariationAxisValue (CFDictionaryRef dictionary,
+                                               CFStringRef key) const
+    {
+        CFTypeRef value = nullptr;
+        if (CFDictionaryGetValueIfPresent (dictionary, key, (const void**) &value))
+        {
+            if constexpr (std::is_same_v<int32, Type>)
+            {
+                if (CFGetTypeID (value) == CFNumberGetTypeID())
+                {
+                    Type result = 0;
+                    CFNumberGetValue ((CFNumberRef) value,
+                                      kCFNumberSInt32Type,
+                                      (void*) &result);
+                    
+                    return result;
+                }
+            }
+            else if constexpr (std::is_same_v<double, Type>)
+            {
+                if (CFGetTypeID (value) == CFNumberGetTypeID())
+                {
+                    Type result = 0;
+                    CFNumberGetValue ((CFNumberRef) value,
+                                      kCFNumberDoubleType,
+                                      (void*) &result);
+                    
+                    return result;
+                }
+            }
+            else if constexpr (std::is_same_v<String, Type>)
+            {
+                if (CFGetTypeID (value) == CFStringGetTypeID())
+                {
+                    return String::fromCFString ((CFStringRef) value);
+                }
+            }
+            else if constexpr (std::is_same_v<bool, Type>)
+            {
+                if (CFGetTypeID (value) == CFBooleanGetTypeID())
+                {
+                    return (bool) CFBooleanGetValue ((CFBooleanRef) value);
+                }
+            }
+        }
+        
+        return std::nullopt;
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSXTypeface)
@@ -914,8 +1021,10 @@ StringArray Font::findAllTypefaceStyles (const String& family)
 
 
 //==============================================================================
-Typeface::Ptr Typeface::createSystemTypefaceFor (const Font& font)                  { return *new OSXTypeface (font); }
-Typeface::Ptr Typeface::createSystemTypefaceFor (const void* data, size_t size)     { return *new OSXTypeface (data, size); }
+Typeface::Ptr Typeface::createSystemTypefaceFor (const Font& font)                              { return *new OSXTypeface (font); }
+Typeface::Ptr Typeface::createSystemTypefaceFor (const void* data, size_t size)                 { return *new OSXTypeface (data, size); }
+Typeface::Ptr Typeface::createSystemTypefaceFor (const Font& font,
+                                                 const std::map<String, double>& variations)    { return *new OSXTypeface (font, variations); }
 
 void Typeface::scanFolderForFonts (const File& folder)
 {

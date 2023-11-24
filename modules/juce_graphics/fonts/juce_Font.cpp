@@ -505,6 +505,10 @@ StringArray Font::getAvailableStyles() const
     return findAllTypefaceStyles (getTypefacePtr()->getName());
 }
 
+std::vector<Typeface::VariationAxis> Font::getAvailableVariationAxes() const {
+    return getTypefacePtr()->getVariationAxes();
+}
+
 Typeface::Ptr Font::getTypefacePtr() const
 {
     return font->getTypefacePtr (*this);

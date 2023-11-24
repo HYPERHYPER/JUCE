@@ -158,6 +158,11 @@ public:
 
     /** Returns a list of the styles that this font can use. */
     StringArray getAvailableStyles() const;
+    
+    /** Returns a list of the variations that this font can use.
+        Currently this is only implemented on macOS.
+    */
+    std::vector<Typeface::VariationAxis> getAvailableVariationAxes() const;
 
     //==============================================================================
     /** Returns a typeface font family that represents the default sans-serif font.
