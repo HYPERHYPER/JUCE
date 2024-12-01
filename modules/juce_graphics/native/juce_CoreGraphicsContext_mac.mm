@@ -320,7 +320,7 @@ void CoreGraphicsContext::clipToImageAlpha (const Image& sourceImage, const Affi
         if (sourceImage.getFormat() != Image::SingleChannel)
             singleChannelImage = sourceImage.convertedToFormat (Image::SingleChannel);
 
-        auto image = detail::ImagePtr { CoreGraphicsPixelData::createImage (singleChannelImage, greyColourSpace.get()) };
+        auto image = detail::ImagePtr { createImage (singleChannelImage, greyColourSpace.get()) };
 
         flip();
         auto t = AffineTransform::verticalFlip ((float) sourceImage.getHeight()).followedBy (transform);
@@ -525,7 +525,7 @@ void CoreGraphicsContext::drawImage (const Image& sourceImage, const AffineTrans
 
     auto colourSpace = sourceImage.getFormat() == Image::PixelFormat::SingleChannel ? greyColourSpace.get()
                                                                                     : rgbColourSpace.get();
-    detail::ImagePtr image { CoreGraphicsPixelData::getCachedImageRef (sourceImage, colourSpace) };
+    detail::ImagePtr image { getCachedImageRef (sourceImage, colourSpace) };
 
     ScopedCGContextState scopedState (context.get());
     CGContextSetAlpha (context.get(), state->fillType.getOpacity());
@@ -807,6 +807,14 @@ void CoreGraphicsContext::applyTransform (const AffineTransform& transform) cons
     t.tx = transform.mat02;
     t.ty = transform.mat12;
     CGContextConcatCTM (context.get(), t);
+}
+
+CGImageRef CoreGraphicsContext::getCachedImageRef (const Image& sourceImage, CGColorSpaceRef colourSpace) {
+    return CoreGraphicsPixelData::getCachedImageRef (sourceImage, colourSpace);
+}
+
+CGImageRef CoreGraphicsContext::createImage (const Image& singleChannelImage, CGColorSpaceRef colourSpace) {
+    return CoreGraphicsPixelData::createImage (singleChannelImage, greyColourSpace.get());
 }
 
 //==============================================================================

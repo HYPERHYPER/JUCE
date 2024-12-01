@@ -120,6 +120,8 @@ public:
     CGColorSpaceRef getRGBColorSpace() const { return rgbColourSpace.get(); }
     CGColorSpaceRef getGreyColorSpace() const { return greyColourSpace.get(); }
     CGFloat getFlipHeight() const { return flipHeight; }
+    virtual CGImageRef getCachedImageRef (const Image& sourceImage, CGColorSpaceRef colourSpace);
+    virtual CGImageRef createImage (const Image& singleChannelImage, CGColorSpaceRef colourSpace);
 
 private:
     //==============================================================================
